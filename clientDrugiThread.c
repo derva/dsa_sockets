@@ -53,7 +53,7 @@ int main(int argc , char *argv[])
     int i =0;
     while(i < 1 )
     {
-        printf("Enter message : ");
+        // printf("Enter message : ");
         // scanf("%s" , message);
 	    // gets(message);
          
@@ -70,10 +70,10 @@ int main(int argc , char *argv[])
             puts("recv failed");
             break;
         }
-        gets(message);
-        puts("Server reply :");
-	    server_reply[read_size]=0x00;
-        puts(server_reply);
+        // gets(message);
+        // puts("Server reply :");
+	    // server_reply[read_size]=0x00;
+        // puts(server_reply);
         i++;
     }
      
