@@ -1,9 +1,10 @@
-#include<stdio.h>
-#include<string.h>
-#include<sys/socket.h>
-#include<arpa/inet.h>
-
-int main(int argc , char *argv[]){
+#include<stdio.h> //printf
+#include<string.h>    //strlen
+#include<sys/socket.h>    //socket
+#include<arpa/inet.h> //inet_addr
+ 
+int main(int argc , char *argv[])
+{
     int sock;
     struct sockaddr_in server;
     char message[1000] , server_reply[2000];
@@ -16,6 +17,7 @@ int main(int argc , char *argv[]){
     }
     puts("Socket created");
      
+    //server.sin_addr.s_addr = inet_addr("127.0.0.1");
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_family = AF_INET;
     server.sin_port = htons( 8888 );
@@ -27,17 +29,21 @@ int main(int argc , char *argv[]){
     }
      
     puts("Connected\n");
-    
-    while(1){
+     
+    while(1)
+    {
         printf("Enter message : ");
-	    gets(message);
+        // scanf("%s" , message);
+	gets(message);
          
+        //Send some data
         if( send(sock , message , strlen(message) , 0) < 0)
         {
             puts("Send failed");
             return 1;
         }
          
+        //Receive a reply from the server
         if( (read_size=recv(sock , server_reply , 2000 , 0)) < 0)
         {
             puts("recv failed");

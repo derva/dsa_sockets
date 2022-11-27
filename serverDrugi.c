@@ -4,14 +4,15 @@
 #include<arpa/inet.h>
 #include<unistd.h>
  
-int main(int argc , char *argv[]){
-
+int main(int argc , char *argv[])
+{
     int socket_desc , client_sock , c , read_size;
     struct sockaddr_in server , client;
     char client_message[2000];
      
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
-    if (socket_desc == -1){
+    if (socket_desc == -1)
+    {
         printf("Could not create socket");
     }
     puts("Socket created");
@@ -19,20 +20,17 @@ int main(int argc , char *argv[]){
     server.sin_port = htons(8888);
     server.sin_addr.s_addr = INADDR_ANY;
 
-    if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0){
+    if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
+    {
         perror("Binding server failed. System error");
         return 1;
     }
-
     puts("Bind done");
      
     listen(socket_desc , 3);
      
-    printf("\n*****************************\n");
     puts("Waiting for incoming connections...");
-
     c = sizeof(struct sockaddr_in);
-    
     while( client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c) ) {
         if (client_sock < 0)
         {
@@ -46,22 +44,23 @@ int main(int argc , char *argv[]){
                 puts("Client disconnected");
                 fflush(stdout);
             } else if(read_size == -1) {
-                perror("Recv failed");
+                perror("recv failed");
             }
             while( read_size = recv(client_sock , client_message , 2000 , 0)   )
             {
                 client_message[read_size]=0x00;
                 int lenghtOfDataHeader = client_message[0] - '0';
-                int i = 1;
+                printf("lengthofData %i", lenghtOfDataHeader);
+                int i = 0;
                 char data[2000];
 
                 while ( i <= lenghtOfDataHeader ) {
-                    data[i-1] = client_message[i];
+                    data[i] = client_message[i];
                     i++;
                 }
 
                 FILE* fp = fopen(data, "w");
-                printf("\n=======================================================\n");
+                printf("\n=========\n");
                 printf("Header: %s ", data);
                 int j = 0;
                 while ( client_message[i] != NULL ){
@@ -76,19 +75,16 @@ int main(int argc , char *argv[]){
                     fprintf(fp, data);
                 }
                 fclose(fp);
-                printf("\n=======================================================\n");
-                printf("Data: %s", data);
-                printf("=======================================================\n");
+                printf("\n=========\n");
+                printf("Data: %s ", data);
+                printf("\n=========\n");
                 // printf("client_message: %s ", client_message);
                 // printf("strlen client message&: %li ", strlen(client_message));
-                // printf("\n");
+
                 // printf("Server get: ");
+                // client_message[read_size]=0x00;
                 // printf("%c\n", client_message[0]);
                 send(client_sock , client_message , strlen(client_message),0);
-                for ( int o = 0; o < read_size; o++ ){
-                    client_message[o] = '\0';
-                    data[o] = '\0';
-                }  
             }
         }
     }
